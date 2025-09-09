@@ -1,83 +1,181 @@
 ﻿@model HubWalks.Bussines.Models.Cliente
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Novo Cliente";
 }
 
-<h1>Create</h1>
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 m-0">Novo Cliente</h1>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
 
-<h4>Cliente</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="NomeCliente" class="control-label"></label>
-                <input asp-for="NomeCliente" class="form-control" />
-                <span asp-validation-for="NomeCliente" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Endereco" class="control-label"></label>
-                <input asp-for="Endereco" class="form-control" />
-                <span asp-validation-for="Endereco" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NumeroTelefone" class="control-label"></label>
-                <input asp-for="NumeroTelefone" class="form-control" />
-                <span asp-validation-for="NumeroTelefone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CpfCnpj" class="control-label"></label>
-                <input asp-for="CpfCnpj" class="form-control" />
-                <span asp-validation-for="CpfCnpj" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataNascimento" class="control-label"></label>
-                <input asp-for="DataNascimento" class="form-control" />
-                <span asp-validation-for="DataNascimento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SiteOficial" class="control-label"></label>
-                <input asp-for="SiteOficial" class="form-control" />
-                <span asp-validation-for="SiteOficial" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Instagram" class="control-label"></label>
-                <input asp-for="Instagram" class="form-control" />
-                <span asp-validation-for="Instagram" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RedeSocial_1" class="control-label"></label>
-                <input asp-for="RedeSocial_1" class="form-control" />
-                <span asp-validation-for="RedeSocial_1" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RedeSocial_2" class="control-label"></label>
-                <input asp-for="RedeSocial_2" class="form-control" />
-                <span asp-validation-for="RedeSocial_2" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataCadastro" class="control-label"></label>
-                <input asp-for="DataCadastro" class="form-control" />
-                <span asp-validation-for="DataCadastro" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Create" method="post" novalidate>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="NomeCliente" class="form-label"></label>
+                        <input asp-for="NomeCliente" class="form-control" />
+                        <span asp-validation-for="NomeCliente" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="NumeroTelefone" class="form-label">Telefone</label>
+                        <input asp-for="NumeroTelefone" class="form-control" id="telefoneBr" placeholder="(00) 00000-0000" />
+                        <span asp-validation-for="NumeroTelefone" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="CpfCnpj" class="form-label">CPF/CNPJ</label>
+                        <input asp-for="CpfCnpj" class="form-control" id="cpfCnpj" />
+                        <span asp-validation-for="CpfCnpj" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="DataNascimento" class="form-label"></label>
+                        <input asp-for="DataNascimento" class="form-control" type="date" />
+                        <span asp-validation-for="DataNascimento" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Endereco" class="form-label"></label>
+                        <input asp-for="Endereco" class="form-control" />
+                        <span asp-validation-for="Endereco" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="SiteOficial" class="form-label"></label>
+                        <input asp-for="SiteOficial" class="form-control" placeholder="https://exemplo.com" />
+                        <span asp-validation-for="SiteOficial" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <!-- Área opcional de redes sociais -->
+                <div class="mb-3">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <strong class="me-2">Deseja adicionar redes sociais?</strong>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="toggleSocialBtn">
+                            Adicionar redes sociais
+                        </button>
+                    </div>
+                </div>
+
+                <div id="socialFields" class="row g-3 d-none">
+                    <div class="col-md-4">
+                        <label asp-for="Instagram" class="form-label"></label>
+                        <input asp-for="Instagram" class="form-control" placeholder="link de perfil" />
+                        <span asp-validation-for="Instagram" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="RedeSocial_1" class="form-label"></label>
+                        <input asp-for="RedeSocial_1" class="form-control" placeholder="https://..." />
+                        <span asp-validation-for="RedeSocial_1" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="RedeSocial_2" class="form-label"></label>
+                        <input asp-for="RedeSocial_2" class="form-control" placeholder="https://..." />
+                        <span asp-validation-for="RedeSocial_2" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- DataCadastro removido: é preenchido no construtor -->
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="reset" class="btn btn-outline-secondary">Limpar</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        (function () {
+            const tel = document.getElementById('telefoneBr');
+            const cpfCnpj = document.getElementById('cpfCnpj');
+            const socialFields = document.getElementById('socialFields');
+            const toggleBtn = document.getElementById('toggleSocialBtn');
+
+            // Toggle redes sociais
+            toggleBtn?.addEventListener('click', function () {
+                const hidden = socialFields.classList.contains('d-none');
+                socialFields.classList.toggle('d-none', !hidden === false); // apenas para garantir
+                socialFields.classList.toggle('d-none');
+                this.textContent = socialFields.classList.contains('d-none')
+                    ? 'Adicionar redes sociais'
+                    : 'Ocultar redes sociais';
+            });
+
+            // Máscara telefone BR (10 ou 11 dígitos)
+            function maskPhone(value) {
+                const digits = value.replace(/\D/g, '').slice(0, 11);
+                if (digits.length <= 10) {
+                    // (##) ####-####
+                    return digits
+                        .replace(/^(\d{0,2})/, '($1')
+                        .replace(/^(\(\d{2})(\d{0,4})/, '$1) $2')
+                        .replace(/^(\(\d{2}\) \d{4})(\d{0,4})/, '$1-$2');
+                } else {
+                    // (##) #####-####
+                    return digits
+                        .replace(/^(\d{0,2})/, '($1')
+                        .replace(/^(\(\d{2})(\d{0,5})/, '$1) $2')
+                        .replace(/^(\(\d{2}\) \d{5})(\d{0,4})/, '$1-$2');
+                }
+            }
+            function onPhoneInput(e) { e.target.value = maskPhone(e.target.value); }
+            tel?.addEventListener('input', onPhoneInput);
+            tel?.addEventListener('blur', onPhoneInput);
+            tel?.addEventListener('paste', function (e) {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                tel.value = maskPhone(text);
+            });
+
+            // Máscara simples CPF/CNPJ (opcional, ajuda o usuário a digitar no padrão)
+            function maskCpfCnpj(value) {
+                const d = value.replace(/\D/g, '').slice(0, 14);
+                if (d.length <= 11) {
+                    // CPF: 000.000.000-00
+                    return d
+                        .replace(/^(\d{3})(\d)/, '$1.$2')
+                        .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+                        .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
+                }
+                // CNPJ: 00.000.000/0000-00
+                return d
+                    .replace(/^(\d{2})(\d)/, '$1.$2')
+                    .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+                    .replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3/$4')
+                    .replace(/^(\d{2})\.(\d{3})\.(\d{3})\/(\d{4})(\d)/, '$1.$2.$3/$4-$5');
+            }
+            function onCpfCnpjInput(e) { e.target.value = maskCpfCnpj(e.target.value); }
+            cpfCnpj?.addEventListener('input', onCpfCnpjInput);
+            cpfCnpj?.addEventListener('blur', onCpfCnpjInput);
+            cpfCnpj?.addEventListener('paste', function (e) {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                cpfCnpj.value = maskCpfCnpj(text);
+            });
+        })();
+    </script>
 }

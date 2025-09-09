@@ -1,84 +1,107 @@
 ﻿@model HubWalks.Bussines.Models.Cliente
+@using System.Text.RegularExpressions
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Cliente";
+
+    string FormatCpfCnpj(string v)
+    {
+        if (string.IsNullOrWhiteSpace(v)) return "";
+        var d = new string(v.Where(char.IsDigit).ToArray());
+        if (d.Length == 11) return Regex.Replace(d, @"(\d{3})(\d{3})(\d{3})(\d{2})", "$1.$2.$3-$4");
+        if (d.Length == 14) return Regex.Replace(d, @"(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})", "$1.$2.$3/$4-$5");
+        return v;
+    }
 }
 
-<h1>Details</h1>
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 m-0">Detalhes do Cliente</h1>
+        <div class="btn-group">
+            <a asp-action="Edit" asp-route-id="@Model.IdCliente" class="btn btn-primary">Editar</a>
+            <a asp-action="Delete" asp-route-id="@Model.IdCliente" class="btn btn-danger">Excluir</a>
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
 
-<div>
-    <h4>Cliente</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeCliente)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeCliente)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Endereco)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Endereco)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumeroTelefone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumeroTelefone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CpfCnpj)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CpfCnpj)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataNascimento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataNascimento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SiteOficial)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SiteOficial)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Instagram)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Instagram)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RedeSocial_1)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RedeSocial_1)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RedeSocial_2)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RedeSocial_2)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataCadastro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataCadastro)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdCliente">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Nome</dt>
+                <dd class="col-sm-9">@Model.NomeCliente</dd>
+
+                <dt class="col-sm-3">E-mail</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrWhiteSpace(Model.Email))
+                    {
+                        <a href="mailto:@Model.Email">@Model.Email</a>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Telefone</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrWhiteSpace(Model.NumeroTelefone))
+                    {
+                        <a href="tel:@Model.NumeroTelefone">@Model.NumeroTelefone</a>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">CPF/CNPJ</dt>
+                <dd class="col-sm-9">@FormatCpfCnpj(Model.CpfCnpj)</dd>
+
+                <dt class="col-sm-3">Endereço</dt>
+                <dd class="col-sm-9">@Model.Endereco</dd>
+
+                <dt class="col-sm-3">Data de Nascimento</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.DataNascimento)</dd>
+
+                <dt class="col-sm-3">Site Oficial</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrWhiteSpace(Model.SiteOficial))
+                    {
+                        var url = Model.SiteOficial.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                        ? Model.SiteOficial
+                        : $"https://{Model.SiteOficial}";
+                        <a href="@url" target="_blank" rel="noopener">@Model.SiteOficial</a>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Instagram</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrWhiteSpace(Model.Instagram))
+                    {
+                        var insta = Model.Instagram.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                        ? Model.Instagram
+                        : $"https://instagram.com/{Model.Instagram.TrimStart('@')}";
+                        <a href="@insta" target="_blank" rel="noopener">@Model.Instagram</a>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Rede Social 1</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrWhiteSpace(Model.RedeSocial_1))
+                    {
+                        var rs1 = Model.RedeSocial_1.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                        ? Model.RedeSocial_1
+                        : $"https://{Model.RedeSocial_1}";
+                        <a href="@rs1" target="_blank" rel="noopener">@Model.RedeSocial_1</a>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Rede Social 2</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrWhiteSpace(Model.RedeSocial_2))
+                    {
+                        var rs2 = Model.RedeSocial_2.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                        ? Model.RedeSocial_2
+                        : $"https://{Model.RedeSocial_2}";
+                        <a href="@rs2" target="_blank" rel="noopener">@Model.RedeSocial_2</a>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Cadastro</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.DataCadastro)</dd>
+            </dl>
+        </div>
+    </div>
 </div>

@@ -240,8 +240,8 @@ namespace HubWalks.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "role-admin", "d700c721-af4e-4e42-acba-e774b0b1535f", "Admin", "ADMIN" },
-                    { "role-user", "acf48184-5764-4887-b205-bcba2dfa5579", "User", "USER" }
+                    { "role-admin", "9ee30f71-270d-4a91-988b-3a402978abfd", "Admin", "ADMIN" },
+                    { "role-user", "9908fe0b-8cc8-4621-8023-4e7399132cad", "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
