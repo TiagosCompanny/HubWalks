@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -17,10 +18,10 @@ namespace HubWalks.Data.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -31,21 +32,21 @@ namespace HubWalks.Data.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,18 +57,18 @@ namespace HubWalks.Data.Migrations
                 name: "Clientes",
                 columns: table => new
                 {
-                    IdCliente = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NomeCliente = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Endereco = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    NumeroTelefone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CpfCnpj = table.Column<string>(type: "nvarchar(18)", maxLength: 18, nullable: false),
-                    DataNascimento = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    SiteOficial = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Instagram = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RedeSocial_1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RedeSocial_2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    IdCliente = table.Column<Guid>(type: "uuid", nullable: false),
+                    NomeCliente = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Endereco = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    NumeroTelefone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    CpfCnpj = table.Column<string>(type: "character varying(18)", maxLength: 18, nullable: false),
+                    DataNascimento = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    SiteOficial = table.Column<string>(type: "text", nullable: true),
+                    Instagram = table.Column<string>(type: "text", nullable: true),
+                    RedeSocial_1 = table.Column<string>(type: "text", nullable: true),
+                    RedeSocial_2 = table.Column<string>(type: "text", nullable: true),
+                    DataCadastro = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,14 +79,14 @@ namespace HubWalks.Data.Migrations
                 name: "NotasFicais",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdJobOrder = table.Column<int>(type: "int", nullable: false),
-                    DataEmissao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ValorTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    NumeroNota = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Serie = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    ChaveAcesso = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IdJobOrder = table.Column<int>(type: "integer", nullable: false),
+                    DataEmissao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ValorTotal = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    NumeroNota = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Serie = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    ChaveAcesso = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,20 +97,20 @@ namespace HubWalks.Data.Migrations
                 name: "OrdensDeServico",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NomeProjeto = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    DataSolicitacao = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdClient = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Closer = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Sdr_Bdr = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PercentualComissaoComercial = table.Column<double>(type: "float", nullable: false),
-                    Observacao = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    Prazo = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Promessas = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    Valor = table.Column<double>(type: "float", nullable: false),
-                    FormaPagamento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    NomeProjeto = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
+                    Descricao = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    DataSolicitacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IdClient = table.Column<Guid>(type: "uuid", nullable: false),
+                    Closer = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Sdr_Bdr = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PercentualComissaoComercial = table.Column<double>(type: "double precision", nullable: false),
+                    Observacao = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Prazo = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Promessas = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Valor = table.Column<double>(type: "double precision", nullable: false),
+                    FormaPagamento = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,9 +121,9 @@ namespace HubWalks.Data.Migrations
                 name: "Sdr_Bdrs",
                 columns: table => new
                 {
-                    IdSdr_Bdr = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    IdSdr_Bdr = table.Column<Guid>(type: "uuid", nullable: false),
+                    Nome = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    DataCadastro = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,11 +134,11 @@ namespace HubWalks.Data.Migrations
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleId = table.Column<string>(type: "text", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -154,11 +155,11 @@ namespace HubWalks.Data.Migrations
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -175,10 +176,10 @@ namespace HubWalks.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    LoginProvider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -195,8 +196,8 @@ namespace HubWalks.Data.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    RoleId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -219,10 +220,10 @@ namespace HubWalks.Data.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    LoginProvider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -240,8 +241,8 @@ namespace HubWalks.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "role-admin", "e7a4ea2c-ae4c-4624-842c-0803e9255095", "Admin", "ADMIN" },
-                    { "role-user", "ae2b4405-976e-4635-b2b2-fb5d24bb949c", "User", "USER" }
+                    { "role-admin", "d08622ee-16e3-414e-a18d-55a4de47de83", "Admin", "ADMIN" },
+                    { "role-user", "9e61b435-0404-439d-afa8-ad0b51afeba8", "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -253,8 +254,7 @@ namespace HubWalks.Data.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -280,8 +280,7 @@ namespace HubWalks.Data.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                unique: true);
         }
 
         /// <inheritdoc />
