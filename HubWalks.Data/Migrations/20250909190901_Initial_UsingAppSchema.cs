@@ -4,16 +4,22 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace HubWalks.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialOk : Migration
+    public partial class Initial_UsingAppSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "app");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
+                schema: "app",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
@@ -28,6 +34,7 @@ namespace HubWalks.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUsers",
+                schema: "app",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
@@ -53,6 +60,7 @@ namespace HubWalks.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Clientes",
+                schema: "app",
                 columns: table => new
                 {
                     IdCliente = table.Column<Guid>(type: "uuid", nullable: false),
@@ -75,6 +83,7 @@ namespace HubWalks.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "NotasFicais",
+                schema: "app",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -93,6 +102,7 @@ namespace HubWalks.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OrdensDeServico",
+                schema: "app",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -117,6 +127,7 @@ namespace HubWalks.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Sdr_Bdrs",
+                schema: "app",
                 columns: table => new
                 {
                     IdSdr_Bdr = table.Column<Guid>(type: "uuid", nullable: false),
@@ -130,6 +141,7 @@ namespace HubWalks.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
+                schema: "app",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -144,6 +156,7 @@ namespace HubWalks.Data.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
+                        principalSchema: "app",
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -151,6 +164,7 @@ namespace HubWalks.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
+                schema: "app",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -165,6 +179,7 @@ namespace HubWalks.Data.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserClaims_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "app",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -172,6 +187,7 @@ namespace HubWalks.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserLogins",
+                schema: "app",
                 columns: table => new
                 {
                     LoginProvider = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
@@ -185,6 +201,7 @@ namespace HubWalks.Data.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "app",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -192,6 +209,7 @@ namespace HubWalks.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserRoles",
+                schema: "app",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "text", nullable: false),
@@ -203,12 +221,14 @@ namespace HubWalks.Data.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
                         column: x => x.RoleId,
+                        principalSchema: "app",
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "app",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -216,6 +236,7 @@ namespace HubWalks.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserTokens",
+                schema: "app",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "text", nullable: false),
@@ -229,44 +250,62 @@ namespace HubWalks.Data.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "app",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                schema: "app",
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "role-admin", "cead9bbb-83d9-4c23-9ec5-b741ab868e89", "Admin", "ADMIN" },
+                    { "role-user", "ff800158-7842-4e30-aca6-8b6c1ae51a23", "User", "USER" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
+                schema: "app",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
+                schema: "app",
                 table: "AspNetRoles",
                 column: "NormalizedName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
+                schema: "app",
                 table: "AspNetUserClaims",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserLogins_UserId",
+                schema: "app",
                 table: "AspNetUserLogins",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserRoles_RoleId",
+                schema: "app",
                 table: "AspNetUserRoles",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
+                schema: "app",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
+                schema: "app",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
@@ -276,37 +315,48 @@ namespace HubWalks.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AspNetRoleClaims");
+                name: "AspNetRoleClaims",
+                schema: "app");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserClaims");
+                name: "AspNetUserClaims",
+                schema: "app");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserLogins");
+                name: "AspNetUserLogins",
+                schema: "app");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserRoles");
+                name: "AspNetUserRoles",
+                schema: "app");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserTokens");
+                name: "AspNetUserTokens",
+                schema: "app");
 
             migrationBuilder.DropTable(
-                name: "Clientes");
+                name: "Clientes",
+                schema: "app");
 
             migrationBuilder.DropTable(
-                name: "NotasFicais");
+                name: "NotasFicais",
+                schema: "app");
 
             migrationBuilder.DropTable(
-                name: "OrdensDeServico");
+                name: "OrdensDeServico",
+                schema: "app");
 
             migrationBuilder.DropTable(
-                name: "Sdr_Bdrs");
+                name: "Sdr_Bdrs",
+                schema: "app");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "AspNetRoles",
+                schema: "app");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "AspNetUsers",
+                schema: "app");
         }
     }
 }

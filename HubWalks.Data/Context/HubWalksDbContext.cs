@@ -29,10 +29,9 @@ namespace HubWalks.Data.Context
         {
             base.OnModelCreating(builder);
 
-            // usa um schema diferente do "public"
+            // <<< ESSENCIAL >>>
             builder.HasDefaultSchema("app");
 
-            // seu seeding de roles continua aqui…
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = "role-admin", Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = Guid.NewGuid().ToString() },
                 new IdentityRole { Id = "role-user", Name = "User", NormalizedName = "USER", ConcurrencyStamp = Guid.NewGuid().ToString() }

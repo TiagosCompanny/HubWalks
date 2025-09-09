@@ -17,6 +17,7 @@ namespace HubWalks.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("app")
                 .HasAnnotation("ProductVersion", "8.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -72,7 +73,7 @@ namespace HubWalks.Data.Migrations
 
                     b.HasKey("IdCliente");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Clientes", "app");
                 });
 
             modelBuilder.Entity("HubWalks.Bussines.Models.JobOrder", b =>
@@ -135,7 +136,7 @@ namespace HubWalks.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdensDeServico");
+                    b.ToTable("OrdensDeServico", "app");
                 });
 
             modelBuilder.Entity("HubWalks.Bussines.Models.NotaFiscal", b =>
@@ -172,7 +173,7 @@ namespace HubWalks.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NotasFicais");
+                    b.ToTable("NotasFicais", "app");
                 });
 
             modelBuilder.Entity("HubWalks.Bussines.Models.Sdr_Bdr", b =>
@@ -191,7 +192,7 @@ namespace HubWalks.Data.Migrations
 
                     b.HasKey("IdSdr_Bdr");
 
-                    b.ToTable("Sdr_Bdrs");
+                    b.ToTable("Sdr_Bdrs", "app");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -217,7 +218,23 @@ namespace HubWalks.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("AspNetRoles", "app");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "role-admin",
+                            ConcurrencyStamp = "cead9bbb-83d9-4c23-9ec5-b741ab868e89",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "role-user",
+                            ConcurrencyStamp = "ff800158-7842-4e30-aca6-8b6c1ae51a23",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -242,7 +259,7 @@ namespace HubWalks.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("AspNetRoleClaims", "app");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
@@ -306,7 +323,7 @@ namespace HubWalks.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("AspNetUsers", "app");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -331,7 +348,7 @@ namespace HubWalks.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("AspNetUserClaims", "app");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -355,7 +372,7 @@ namespace HubWalks.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("AspNetUserLogins", "app");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -370,7 +387,7 @@ namespace HubWalks.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("AspNetUserRoles", "app");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -391,7 +408,7 @@ namespace HubWalks.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("AspNetUserTokens", "app");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
