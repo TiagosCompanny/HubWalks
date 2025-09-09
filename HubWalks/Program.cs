@@ -13,8 +13,11 @@ namespace HubWalks
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+
             builder.Services.AddDbContext<HubWalksDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            options.UseNpgsql(connectionString, b => b.MigrationsAssembly("HubWalks.Data")));
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
