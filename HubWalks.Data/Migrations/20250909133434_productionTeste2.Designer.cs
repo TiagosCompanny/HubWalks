@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HubWalks.Data.Migrations
 {
     [DbContext(typeof(HubWalksDbContext))]
-    [Migration("20250909125623_productionTeste")]
-    partial class productionTeste
+    [Migration("20250909133434_productionTeste2")]
+    partial class productionTeste2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -221,22 +221,6 @@ namespace HubWalks.Data.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "role-admin",
-                            ConcurrencyStamp = "63fcd984-f1ba-441a-b602-80df4d885527",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "role-user",
-                            ConcurrencyStamp = "9b12b86a-12ef-4d5c-96ca-244dcd0946ef",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
