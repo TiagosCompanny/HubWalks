@@ -7,8 +7,8 @@ ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT}
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet restore "HubWalks/HubWalks.csproj"
-RUN dotnet publish "HubWalks/HubWalks.csproj" -c Release -o /app
+RUN dotnet restore "HubWalks.csproj"
+RUN dotnet publish "HubWalks.csproj" -c Release -o /app
 
 # Final
 FROM base AS final
