@@ -1,101 +1,57 @@
 ﻿@model IEnumerable<HubWalks.Bussines.Models.JobOrder>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Ordens de Serviço";
 }
 
-<h1>Index</h1>
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 m-0">Ordens de Serviço</h1>
+        <a asp-action="Create" class="btn btn-success">Nova Ordem</a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NomeProjeto)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataSolicitacao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdClient)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Closer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sdr_Bdr)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PercentualComissaoComercial)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Observacao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Prazo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Promessas)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Valor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FormaPagamento)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomeProjeto)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataSolicitacao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdClient)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Closer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sdr_Bdr)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PercentualComissaoComercial)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Observacao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Prazo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Promessas)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Valor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FormaPagamento)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(m => m.First().NomeProjeto)</th>
+                            <th>Cliente</th>
+                            <th>@Html.DisplayNameFor(m => m.First().Closer)</th>
+                            <th>@Html.DisplayNameFor(m => m.First().Sdr_Bdr)</th>
+                            <th>@Html.DisplayNameFor(m => m.First().DataSolicitacao)</th>
+                            <th>@Html.DisplayNameFor(m => m.First().Prazo)</th>
+                            <th>@Html.DisplayNameFor(m => m.First().Valor)</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.NomeProjeto</td>
+                                <td>
+                                    @* Aqui idealmente deveria mostrar o nome do cliente em vez do Guid *@
+                                    @item.IdClient
+                                </td>
+                                <td>@item.Closer</td>
+                                <td>@item.Sdr_Bdr</td>
+                                <td>@item.DataSolicitacao.ToString("dd/MM/yyyy")</td>
+                                <td>@item.Prazo.ToString("dd/MM/yyyy")</td>
+                                <td>@item.Valor.ToString("C")</td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary">Detalhes</a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Editar</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Excluir</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

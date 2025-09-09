@@ -1,90 +1,58 @@
 ﻿@model HubWalks.Bussines.Models.JobOrder
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Ordem de Serviço";
 }
 
-<h1>Details</h1>
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 m-0">Detalhes da Ordem de Serviço</h1>
+        <div class="btn-group">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Excluir</a>
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
 
-<div>
-    <h4>JobOrder</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeProjeto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeProjeto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataSolicitacao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataSolicitacao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdClient)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdClient)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Closer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Closer)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Sdr_Bdr)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Sdr_Bdr)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PercentualComissaoComercial)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PercentualComissaoComercial)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Observacao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Observacao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Prazo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Prazo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Promessas)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Promessas)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Valor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Valor)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FormaPagamento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FormaPagamento)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Nome do Projeto</dt>
+                <dd class="col-sm-9">@Model.NomeProjeto</dd>
+
+                <dt class="col-sm-3">Descrição</dt>
+                <dd class="col-sm-9">@Model.Descricao</dd>
+
+                <dt class="col-sm-3">Data da Solicitação</dt>
+                <dd class="col-sm-9">@Model.DataSolicitacao.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">Cliente</dt>
+                <dd class="col-sm-9">@Model.IdClient</dd> @* Aqui ideal seria exibir o NomeCliente *@
+
+                <dt class="col-sm-3">Closer</dt>
+                <dd class="col-sm-9">@Model.Closer</dd>
+
+                <dt class="col-sm-3">SDR/BDR</dt>
+                <dd class="col-sm-9">@Model.Sdr_Bdr</dd>
+
+                <dt class="col-sm-3">% Comissão Comercial</dt>
+                <dd class="col-sm-9">@Model.PercentualComissaoComercial %</dd>
+
+                <dt class="col-sm-3">Observação</dt>
+                <dd class="col-sm-9">@Model.Observacao</dd>
+
+                <dt class="col-sm-3">Prazo</dt>
+                <dd class="col-sm-9">@Model.Prazo.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Promessas</dt>
+                <dd class="col-sm-9">@Model.Promessas</dd>
+
+                <dt class="col-sm-3">Valor</dt>
+                <dd class="col-sm-9">@Model.Valor.ToString("C")</dd>
+
+                <dt class="col-sm-3">Forma de Pagamento</dt>
+                <dd class="col-sm-9">@Model.FormaPagamento</dd>
+            </dl>
+        </div>
+    </div>
 </div>
