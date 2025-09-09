@@ -1,17 +1,21 @@
-# Etapa base: runtime ASP.NET Core
+# Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 8080
-ENV ASPNETCORE_URLS=http://+:8080
+# O Render define PORT; vamos escutar nele
+ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT}
 
-# Etapa de build: SDK do .NET
+# Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
+
+# Copia tudo da solução
 COPY . .
+
+# Restaura e publica o projeto web (ajuste o nome se for diferente)
 RUN dotnet restore "HubWalks/HubWalks.csproj"
 RUN dotnet publish "HubWalks/HubWalks.csproj" -c Release -o /app
 
-# Etapa final: copia build para runtime
+# Final
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app .
