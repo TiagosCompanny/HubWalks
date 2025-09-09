@@ -46,8 +46,16 @@ namespace HubWalks
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-            app.Run();
 
+            // Aplica migrations automaticamente em produção
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<HubWalksDbContext>();
+                db.Database.Migrate();
+            }
+
+
+            app.Run();
 
             //todo criar usuario administrador padrao
 

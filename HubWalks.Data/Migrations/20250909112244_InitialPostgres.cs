@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HubWalks.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialPostgres : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -240,8 +240,8 @@ namespace HubWalks.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "role-admin", "9ee30f71-270d-4a91-988b-3a402978abfd", "Admin", "ADMIN" },
-                    { "role-user", "9908fe0b-8cc8-4621-8023-4e7399132cad", "User", "USER" }
+                    { "role-admin", "e7a4ea2c-ae4c-4624-842c-0803e9255095", "Admin", "ADMIN" },
+                    { "role-user", "ae2b4405-976e-4635-b2b2-fb5d24bb949c", "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(

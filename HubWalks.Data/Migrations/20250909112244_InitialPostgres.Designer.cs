@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HubWalks.Data.Migrations
 {
     [DbContext(typeof(HubWalksDbContext))]
-    [Migration("20250909002423_Initial")]
-    partial class Initial
+    [Migration("20250909112244_InitialPostgres")]
+    partial class InitialPostgres
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -227,14 +227,14 @@ namespace HubWalks.Data.Migrations
                         new
                         {
                             Id = "role-admin",
-                            ConcurrencyStamp = "9ee30f71-270d-4a91-988b-3a402978abfd",
+                            ConcurrencyStamp = "e7a4ea2c-ae4c-4624-842c-0803e9255095",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "role-user",
-                            ConcurrencyStamp = "9908fe0b-8cc8-4621-8023-4e7399132cad",
+                            ConcurrencyStamp = "ae2b4405-976e-4635-b2b2-fb5d24bb949c",
                             Name = "User",
                             NormalizedName = "USER"
                         });
