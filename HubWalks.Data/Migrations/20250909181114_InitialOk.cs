@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HubWalks.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class productionTeste2 : Migration
+    public partial class InitialOk : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

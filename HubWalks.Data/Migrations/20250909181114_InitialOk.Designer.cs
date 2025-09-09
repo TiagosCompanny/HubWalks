@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HubWalks.Data.Migrations
 {
     [DbContext(typeof(HubWalksDbContext))]
-    [Migration("20250909133434_productionTeste2")]
-    partial class productionTeste2
+    [Migration("20250909181114_InitialOk")]
+    partial class InitialOk
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
