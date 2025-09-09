@@ -1,41 +1,44 @@
 ﻿@model IEnumerable<HubWalks.Bussines.Models.Sdr_Bdr>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "SDR/BDR";
 }
 
-<h1>Index</h1>
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 m-0">SDR / BDR</h1>
+        <a asp-action="Create" class="btn btn-success">Novo Registro</a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataCadastro)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataCadastro)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdSdr_Bdr">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdSdr_Bdr">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdSdr_Bdr">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(m => m.First().Nome)</th>
+                            <th>@Html.DisplayNameFor(m => m.First().DataCadastro)</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Nome</td>
+                                <td>@item.DataCadastro.ToString("dd/MM/yyyy")</td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.IdSdr_Bdr" class="btn btn-outline-secondary">Detalhes</a>
+                                        <a asp-action="Edit" asp-route-id="@item.IdSdr_Bdr" class="btn btn-primary">Editar</a>
+                                        <a asp-action="Delete" asp-route-id="@item.IdSdr_Bdr" class="btn btn-danger">Excluir</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

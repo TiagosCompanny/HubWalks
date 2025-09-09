@@ -1,54 +1,40 @@
 ﻿@model HubWalks.Bussines.Models.NotaFiscal
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Nota Fiscal";
 }
 
-<h1>Details</h1>
+<div class="container">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 m-0">Detalhes da Nota Fiscal</h1>
+        <div class="btn-group">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Excluir</a>
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
 
-<div>
-    <h4>NotaFiscal</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdJobOrder)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdJobOrder)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataEmissao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataEmissao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ValorTotal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ValorTotal)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumeroNota)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumeroNota)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Serie)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Serie)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ChaveAcesso)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ChaveAcesso)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Job Order</dt>
+                <dd class="col-sm-9">@Model.IdJobOrder</dd>
+
+                <dt class="col-sm-3">Data de Emissão</dt>
+                <dd class="col-sm-9">@Model.DataEmissao.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Valor Total</dt>
+                <dd class="col-sm-9">@Model.ValorTotal.ToString("C")</dd>
+
+                <dt class="col-sm-3">Número da Nota</dt>
+                <dd class="col-sm-9">@Model.NumeroNota</dd>
+
+                <dt class="col-sm-3">Série</dt>
+                <dd class="col-sm-9">@Model.Serie</dd>
+
+                <dt class="col-sm-3">Chave de Acesso</dt>
+                <dd class="col-sm-9 text-break">@Model.ChaveAcesso</dd>
+            </dl>
+        </div>
+    </div>
 </div>
