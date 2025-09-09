@@ -223,14 +223,14 @@ namespace HubWalks.Data.Migrations
                         new
                         {
                             Id = "role-admin",
-                            ConcurrencyStamp = "d08622ee-16e3-414e-a18d-55a4de47de83",
+                            ConcurrencyStamp = "63fcd984-f1ba-441a-b602-80df4d885527",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "role-user",
-                            ConcurrencyStamp = "9e61b435-0404-439d-afa8-ad0b51afeba8",
+                            ConcurrencyStamp = "9b12b86a-12ef-4d5c-96ca-244dcd0946ef",
                             Name = "User",
                             NormalizedName = "USER"
                         });

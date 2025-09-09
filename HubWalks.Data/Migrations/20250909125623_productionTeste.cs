@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HubWalks.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialPostgres : Migration
+    public partial class productionTeste : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -241,8 +241,8 @@ namespace HubWalks.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "role-admin", "d08622ee-16e3-414e-a18d-55a4de47de83", "Admin", "ADMIN" },
-                    { "role-user", "9e61b435-0404-439d-afa8-ad0b51afeba8", "User", "USER" }
+                    { "role-admin", "63fcd984-f1ba-441a-b602-80df4d885527", "Admin", "ADMIN" },
+                    { "role-user", "9b12b86a-12ef-4d5c-96ca-244dcd0946ef", "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
