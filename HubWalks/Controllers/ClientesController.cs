@@ -23,116 +23,100 @@ namespace HubWalks.Controllers
         // GET: Clientes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Clientes.ToListAsync());
+            var clientes = await _context.Clientes
+                .OrderBy(c => c.NomeCliente)
+                .AsNoTracking()
+                .ToListAsync();
+
+            return View(clientes);
         }
 
         // GET: Clientes/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var cliente = await _context.Clientes
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.IdCliente == id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
+
+            if (cliente == null) return NotFound();
 
             return View(cliente);
         }
 
         // GET: Clientes/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         // POST: Clientes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCliente,NomeCliente,Endereco,Email,NumeroTelefone,CpfCnpj,DataNascimento,SiteOficial,Instagram,RedeSocial_1,RedeSocial_2,DataCadastro")] Cliente cliente)
+        public async Task<IActionResult> Create([Bind("NomeCliente,Endereco,Email,NumeroTelefone,CpfCnpj,DataNascimento,SiteOficial,Instagram,RedeSocial_1,RedeSocial_2")] Cliente cliente)
         {
-            if (ModelState.IsValid)
-            {
-                cliente.IdCliente = Guid.NewGuid();
-                _context.Add(cliente);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(cliente);
+            if (!ModelState.IsValid) return View(cliente);
+
+            cliente.IdCliente = Guid.NewGuid();
+            cliente.DataCadastro = DateTime.UtcNow; // defina no servidor
+
+            _context.Add(cliente);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Clientes/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
+            if (cliente == null) return NotFound();
+
             return View(cliente);
         }
 
         // POST: Clientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("IdCliente,NomeCliente,Endereco,Email,NumeroTelefone,CpfCnpj,DataNascimento,SiteOficial,Instagram,RedeSocial_1,RedeSocial_2,DataCadastro")] Cliente cliente)
+        public async Task<IActionResult> Edit(Guid id, [Bind("NomeCliente,Endereco,Email,NumeroTelefone,CpfCnpj,DataNascimento,SiteOficial,Instagram,RedeSocial_1,RedeSocial_2")] Cliente form)
         {
-            if (id != cliente.IdCliente)
+            // garante o Id do registro
+            form.IdCliente = id;
+
+            if (!ModelState.IsValid) return View(form);
+
+            // preserva DataCadastro do banco
+            var original = await _context.Clientes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.IdCliente == id);
+
+            if (original == null) return NotFound();
+
+            form.DataCadastro = original.DataCadastro;
+
+            try
             {
-                return NotFound();
+                _context.Update(form);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ClienteExists(id)) return NotFound();
+                throw;
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(cliente);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClienteExists(cliente.IdCliente))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(cliente);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Clientes/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var cliente = await _context.Clientes
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.IdCliente == id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
+
+            if (cliente == null) return NotFound();
 
             return View(cliente);
         }
@@ -146,15 +130,12 @@ namespace HubWalks.Controllers
             if (cliente != null)
             {
                 _context.Clientes.Remove(cliente);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ClienteExists(Guid id)
-        {
-            return _context.Clientes.Any(e => e.IdCliente == id);
-        }
+        private bool ClienteExists(Guid id) =>
+            _context.Clientes.Any(e => e.IdCliente == id);
     }
 }

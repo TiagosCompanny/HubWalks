@@ -20,8 +20,12 @@ namespace HubWalks
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<HubWalksDbContext>();
+            builder.Services
+            .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddRoles<IdentityRole>() // <-- adicione isto se usar roles
+            .AddEntityFrameworkStores<HubWalksDbContext>();
+
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();

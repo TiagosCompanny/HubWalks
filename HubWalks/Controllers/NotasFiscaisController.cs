@@ -22,23 +22,24 @@ namespace HubWalks.Controllers
         // GET: NotasFiscais
         public async Task<IActionResult> Index()
         {
-            return View(await _context.NotasFicais.ToListAsync());
+            var list = await _context.NotasFicais
+                .AsNoTracking()
+                .OrderByDescending(n => n.DataEmissao)
+                .ToListAsync();
+
+            return View(list);
         }
 
         // GET: NotasFiscais/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var notaFiscal = await _context.NotasFicais
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (notaFiscal == null)
-            {
-                return NotFound();
-            }
+
+            if (notaFiscal == null) return NotFound();
 
             return View(notaFiscal);
         }
@@ -46,90 +47,94 @@ namespace HubWalks.Controllers
         // GET: NotasFiscais/Create
         public IActionResult Create()
         {
+            var orders = _context.OrdensDeServico
+                .AsNoTracking()
+                .OrderBy(o => o.NomeProjeto)
+                .Select(o => new { o.Id, Texto = $"{o.Id} - {o.NomeProjeto}" })
+                .ToList();
+
+            ViewBag.SemJobOrders = !orders.Any();
+            ViewBag.JobOrders = new SelectList(orders, "Id", "Texto");
+
             return View();
         }
 
         // POST: NotasFiscais/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdJobOrder,DataEmissao,ValorTotal,NumeroNota,Serie,ChaveAcesso")] NotaFiscal notaFiscal)
+        public async Task<IActionResult> Create([Bind("IdJobOrder,ValorTotal,NumeroNota,Serie,ChaveAcesso")] NotaFiscal notaFiscal)
         {
-            if (ModelState.IsValid)
+            // Define a data no servidor
+            notaFiscal.DataEmissao = DateTime.UtcNow;
+
+            if (!ModelState.IsValid)
             {
-                _context.Add(notaFiscal);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await CarregarJobOrders(notaFiscal.IdJobOrder);
+                return View(notaFiscal);
             }
-            return View(notaFiscal);
+
+            _context.Add(notaFiscal);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: NotasFiscais/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var notaFiscal = await _context.NotasFicais.FindAsync(id);
-            if (notaFiscal == null)
-            {
-                return NotFound();
-            }
+            if (notaFiscal == null) return NotFound();
+
+            await CarregarJobOrders(notaFiscal.IdJobOrder);
             return View(notaFiscal);
         }
 
         // POST: NotasFiscais/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IdJobOrder,DataEmissao,ValorTotal,NumeroNota,Serie,ChaveAcesso")] NotaFiscal notaFiscal)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,IdJobOrder,ValorTotal,NumeroNota,Serie,ChaveAcesso")] NotaFiscal form)
         {
-            if (id != notaFiscal.Id)
+            if (id != form.Id) return NotFound();
+
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                await CarregarJobOrders(form.IdJobOrder);
+                return View(form);
             }
 
-            if (ModelState.IsValid)
+            // preserva DataEmissao do banco
+            var original = await _context.NotasFicais
+                .AsNoTracking()
+                .FirstOrDefaultAsync(n => n.Id == id);
+            if (original == null) return NotFound();
+
+            form.DataEmissao = original.DataEmissao;
+
+            try
             {
-                try
-                {
-                    _context.Update(notaFiscal);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!NotaFiscalExists(notaFiscal.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(form);
+                await _context.SaveChangesAsync();
             }
-            return View(notaFiscal);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!NotaFiscalExists(form.Id)) return NotFound();
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: NotasFiscais/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var notaFiscal = await _context.NotasFicais
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (notaFiscal == null)
-            {
-                return NotFound();
-            }
+
+            if (notaFiscal == null) return NotFound();
 
             return View(notaFiscal);
         }
@@ -143,15 +148,24 @@ namespace HubWalks.Controllers
             if (notaFiscal != null)
             {
                 _context.NotasFicais.Remove(notaFiscal);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NotaFiscalExists(int id)
+        private bool NotaFiscalExists(int id) =>
+            _context.NotasFicais.Any(e => e.Id == id);
+
+        private async Task CarregarJobOrders(int? selectedId)
         {
-            return _context.NotasFicais.Any(e => e.Id == id);
+            var orders = await _context.OrdensDeServico
+                .AsNoTracking()
+                .OrderBy(o => o.NomeProjeto)
+                .Select(o => new { o.Id, Texto = $"{o.Id} - {o.NomeProjeto}" })
+                .ToListAsync();
+
+            ViewBag.SemJobOrders = !orders.Any();
+            ViewBag.JobOrders = new SelectList(orders, "Id", "Texto", selectedId);
         }
     }
 }

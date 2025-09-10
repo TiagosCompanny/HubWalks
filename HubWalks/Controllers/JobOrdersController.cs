@@ -22,7 +22,12 @@ namespace HubWalks.Controllers
         // GET: JobOrders
         public async Task<IActionResult> Index()
         {
-            return View(await _context.OrdensDeServico.ToListAsync());
+            var list = await _context.OrdensDeServico
+                .AsNoTracking()
+                .OrderBy(o => o.NomeProjeto)
+                .ToListAsync();
+
+            return View(list);
         }
 
         // GET: JobOrders/Details/5
@@ -31,6 +36,7 @@ namespace HubWalks.Controllers
             if (id == null) return NotFound();
 
             var jobOrder = await _context.OrdensDeServico
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (jobOrder == null) return NotFound();
@@ -41,15 +47,12 @@ namespace HubWalks.Controllers
         // GET: JobOrders/Create
         public IActionResult Create()
         {
-            var clientes = _context.Clientes.ToList();
-            var sdrBdrs = _context.Sdr_Bdrs.ToList();
+            var clientes = _context.Clientes.AsNoTracking().OrderBy(c => c.NomeCliente).ToList();
+            var sdrBdrs = _context.Sdr_Bdrs.AsNoTracking().OrderBy(s => s.Nome).ToList();
 
-            if (!clientes.Any() || !sdrBdrs.Any())
-            {
-                ViewBag.SemClientesOuBdr = true;
-            }
-
+            ViewBag.SemClientesOuBdr = !clientes.Any() || !sdrBdrs.Any();
             ViewBag.Clientes = new SelectList(clientes, "IdCliente", "NomeCliente");
+            // value = IdSdr_Bdr (GUID) e texto = Nome; irá para string Sdr_Bdr
             ViewBag.SdrBdrs = new SelectList(sdrBdrs, "IdSdr_Bdr", "Nome");
 
             return View();
@@ -58,20 +61,20 @@ namespace HubWalks.Controllers
         // POST: JobOrders/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NomeProjeto,Descricao,DataSolicitacao,IdClient,Closer,Sdr_Bdr,PercentualComissaoComercial,Observacao,Prazo,Promessas,Valor,FormaPagamento")] JobOrder jobOrder)
+        public async Task<IActionResult> Create([Bind("NomeProjeto,Descricao,IdClient,Closer,Sdr_Bdr,PercentualComissaoComercial,Observacao,Prazo,Promessas,Valor,FormaPagamento")] JobOrder jobOrder)
         {
-            if (ModelState.IsValid)
+            // seta data no servidor
+            jobOrder.DataSolicitacao = DateTime.UtcNow;
+
+            if (!ModelState.IsValid)
             {
-                _context.Add(jobOrder);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await CarregarCombos(jobOrder.IdClient, jobOrder.Sdr_Bdr);
+                return View(jobOrder);
             }
 
-            // Recarregar selects em caso de erro de validação
-            ViewBag.Clientes = new SelectList(_context.Clientes, "IdCliente", "NomeCliente", jobOrder.IdClient);
-            ViewBag.SdrBdrs = new SelectList(_context.Sdr_Bdrs, "IdSdr_Bdr", "Nome", jobOrder.Sdr_Bdr);
-
-            return View(jobOrder);
+            _context.Add(jobOrder);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: JobOrders/Edit/5
@@ -82,40 +85,44 @@ namespace HubWalks.Controllers
             var jobOrder = await _context.OrdensDeServico.FindAsync(id);
             if (jobOrder == null) return NotFound();
 
-            ViewBag.Clientes = new SelectList(_context.Clientes, "IdCliente", "NomeCliente", jobOrder.IdClient);
-            ViewBag.SdrBdrs = new SelectList(_context.Sdr_Bdrs, "IdSdr_Bdr", "Nome", jobOrder.Sdr_Bdr);
-
+            await CarregarCombos(jobOrder.IdClient, jobOrder.Sdr_Bdr);
             return View(jobOrder);
         }
 
         // POST: JobOrders/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NomeProjeto,Descricao,DataSolicitacao,IdClient,Closer,Sdr_Bdr,PercentualComissaoComercial,Observacao,Prazo,Promessas,Valor,FormaPagamento")] JobOrder jobOrder)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NomeProjeto,Descricao,IdClient,Closer,Sdr_Bdr,PercentualComissaoComercial,Observacao,Prazo,Promessas,Valor,FormaPagamento")] JobOrder form)
         {
-            if (id != jobOrder.Id) return NotFound();
+            if (id != form.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(jobOrder);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!JobOrderExists(jobOrder.Id))
-                        return NotFound();
-                    else
-                        throw;
-                }
-                return RedirectToAction(nameof(Index));
+                await CarregarCombos(form.IdClient, form.Sdr_Bdr);
+                return View(form);
             }
 
-            ViewBag.Clientes = new SelectList(_context.Clientes, "IdCliente", "NomeCliente", jobOrder.IdClient);
-            ViewBag.SdrBdrs = new SelectList(_context.Sdr_Bdrs, "IdSdr_Bdr", "Nome", jobOrder.Sdr_Bdr);
+            // preserva DataSolicitacao do banco
+            var original = await _context.OrdensDeServico
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.Id == id);
 
-            return View(jobOrder);
+            if (original == null) return NotFound();
+
+            form.DataSolicitacao = original.DataSolicitacao;
+
+            try
+            {
+                _context.Update(form);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!JobOrderExists(form.Id)) return NotFound();
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: JobOrders/Delete/5
@@ -124,6 +131,7 @@ namespace HubWalks.Controllers
             if (id == null) return NotFound();
 
             var jobOrder = await _context.OrdensDeServico
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (jobOrder == null) return NotFound();
@@ -140,15 +148,22 @@ namespace HubWalks.Controllers
             if (jobOrder != null)
             {
                 _context.OrdensDeServico.Remove(jobOrder);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool JobOrderExists(int id)
+        private bool JobOrderExists(int id) =>
+            _context.OrdensDeServico.Any(e => e.Id == id);
+
+        private async Task CarregarCombos(Guid? selectedCliente, string selectedSdrBdr)
         {
-            return _context.OrdensDeServico.Any(e => e.Id == id);
+            var clientes = await _context.Clientes.AsNoTracking().OrderBy(c => c.NomeCliente).ToListAsync();
+            var sdrBdrs = await _context.Sdr_Bdrs.AsNoTracking().OrderBy(s => s.Nome).ToListAsync();
+
+            ViewBag.SemClientesOuBdr = !clientes.Any() || !sdrBdrs.Any();
+            ViewBag.Clientes = new SelectList(clientes, "IdCliente", "NomeCliente", selectedCliente);
+            ViewBag.SdrBdrs = new SelectList(sdrBdrs, "IdSdr_Bdr", "Nome", selectedSdrBdr);
         }
     }
 }

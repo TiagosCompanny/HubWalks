@@ -18,9 +18,26 @@
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label asp-for="IdJobOrder" class="form-label"></label>
-                        <input asp-for="IdJobOrder" class="form-control" />
-                        <span asp-validation-for="IdJobOrder" class="text-danger"></span>
+                        <label asp-for="IdJobOrder" class="form-label">Ordem de Serviço</label>
+
+                        @if ((ViewBag.JobOrders as IEnumerable<SelectListItem>)?.Any() == true)
+                        {
+                            <select asp-for="IdJobOrder"
+                                    class="form-select"
+                                    asp-items="@(ViewBag.JobOrders as IEnumerable<SelectListItem>)">
+                                <option value="">-- selecione uma OS --</option>
+                            </select>
+                            <span asp-validation-for="IdJobOrder" class="text-danger"></span>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                <div>
+                                    Não há Ordens de Serviço cadastradas.
+                                    <a asp-controller="JobOrders" asp-action="Create" class="alert-link">Cadastre uma OS</a> antes de editar a nota.
+                                </div>
+                            </div>
+                        }
                     </div>
 
                     <div class="col-md-6">
