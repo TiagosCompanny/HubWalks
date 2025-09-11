@@ -12,9 +12,9 @@ namespace HubWalks.Controllers
 {
     public class SdrBdrController : Controller
     {
-        private readonly ISdr_BdrService _sdrBdrService;
+        private readonly IService<Sdr_Bdr> _sdrBdrService;
 
-        public SdrBdrController(ISdr_BdrService sdrBdrService)
+        public SdrBdrController(IService<Sdr_Bdr> sdrBdrService)
         {
             _sdrBdrService = sdrBdrService;
         }

@@ -30,16 +30,8 @@ namespace HubWalks
 
 
             builder.Services.AddControllersWithViews();
-
-            builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
-            builder.Services.AddScoped<IJobOrderRepository, JobOrderRepository>();
-            builder.Services.AddScoped<INotaFiscalRepository, NotaFiscalRepository>();
-            builder.Services.AddScoped<ISdr_BdrRepository, Sdr_BdrRepository>();
-
-            builder.Services.AddScoped<IClienteService, ClienteService>();
-            builder.Services.AddScoped<IJobOrderService, JobOrderService>();
-            builder.Services.AddScoped<INotaFiscalService, NotaFiscalService>();
-            builder.Services.AddScoped<ISdr_BdrService, Sdr_BdrService>();
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
             var app = builder.Build();
 

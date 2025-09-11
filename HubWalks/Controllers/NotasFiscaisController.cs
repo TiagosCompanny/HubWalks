@@ -12,10 +12,10 @@ namespace HubWalks.Controllers
 {
     public class NotasFiscaisController : Controller
     {
-        private readonly INotaFiscalService _notaFiscalService;
-        private readonly IJobOrderService _jobOrderService;
+        private readonly IService<NotaFiscal> _notaFiscalService;
+        private readonly IService<JobOrder> _jobOrderService;
 
-        public NotasFiscaisController(INotaFiscalService notaFiscalService, IJobOrderService jobOrderService)
+        public NotasFiscaisController(IService<NotaFiscal> notaFiscalService, IService<JobOrder> jobOrderService)
         {
             _notaFiscalService = notaFiscalService;
             _jobOrderService = jobOrderService;

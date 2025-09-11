@@ -12,9 +12,9 @@ namespace HubWalks.Controllers
 {
     public class ClientesController : Controller
     {
-        private readonly IClienteService _clienteService;
+        private readonly IService<Cliente> _clienteService;
 
-        public ClientesController(IClienteService clienteService)
+        public ClientesController(IService<Cliente> clienteService)
         {
             _clienteService = clienteService;
         }
