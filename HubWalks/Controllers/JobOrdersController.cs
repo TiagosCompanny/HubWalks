@@ -5,29 +5,29 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using HubWalks.Bussines.Interfaces;
 using HubWalks.Bussines.Models;
-using HubWalks.Data.Context;
 
 namespace HubWalks.Controllers
 {
     public class JobOrdersController : Controller
     {
-        private readonly HubWalksDbContext _context;
+        private readonly IService<JobOrder> _jobOrderService;
+        private readonly IService<Cliente> _clienteService;
+        private readonly IService<Sdr_Bdr> _sdrBdrService;
 
-        public JobOrdersController(HubWalksDbContext context)
+        public JobOrdersController(IService<JobOrder> jobOrderService, IService<Cliente> clienteService, IService<Sdr_Bdr> sdrBdrService)
         {
-            _context = context;
+            _jobOrderService = jobOrderService;
+            _clienteService = clienteService;
+            _sdrBdrService = sdrBdrService;
         }
 
         // GET: JobOrders
         public async Task<IActionResult> Index()
         {
-            var list = await _context.OrdensDeServico
-                .AsNoTracking()
-                .OrderBy(o => o.NomeProjeto)
-                .ToListAsync();
-
-            return View(list);
+            var list = await _jobOrderService.GetAllAsync();
+            return View(list.OrderBy(o => o.NomeProjeto));
         }
 
         // GET: JobOrders/Details/5
@@ -35,9 +35,7 @@ namespace HubWalks.Controllers
         {
             if (id == null) return NotFound();
 
-            var jobOrder = await _context.OrdensDeServico
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var jobOrder = await _jobOrderService.GetByIdAsync(id.Value);
 
             if (jobOrder == null) return NotFound();
 
@@ -47,12 +45,11 @@ namespace HubWalks.Controllers
         // GET: JobOrders/Create
         public IActionResult Create()
         {
-            var clientes = _context.Clientes.AsNoTracking().OrderBy(c => c.NomeCliente).ToList();
-            var sdrBdrs = _context.Sdr_Bdrs.AsNoTracking().OrderBy(s => s.Nome).ToList();
+            var clientes = (await _clienteService.GetAllAsync()).OrderBy(c => c.NomeCliente).ToList();
+            var sdrBdrs = (await _sdrBdrService.GetAllAsync()).OrderBy(s => s.Nome).ToList();
 
             ViewBag.SemClientesOuBdr = !clientes.Any() || !sdrBdrs.Any();
             ViewBag.Clientes = new SelectList(clientes, "IdCliente", "NomeCliente");
-            // value = IdSdr_Bdr (GUID) e texto = Nome; irá para string Sdr_Bdr
             ViewBag.SdrBdrs = new SelectList(sdrBdrs, "IdSdr_Bdr", "Nome");
 
             return View();
@@ -72,8 +69,7 @@ namespace HubWalks.Controllers
                 return View(jobOrder);
             }
 
-            _context.Add(jobOrder);
-            await _context.SaveChangesAsync();
+            await _jobOrderService.AddAsync(jobOrder);
             return RedirectToAction(nameof(Index));
         }
 
@@ -82,7 +78,7 @@ namespace HubWalks.Controllers
         {
             if (id == null) return NotFound();
 
-            var jobOrder = await _context.OrdensDeServico.FindAsync(id);
+            var jobOrder = await _jobOrderService.GetByIdAsync(id.Value);
             if (jobOrder == null) return NotFound();
 
             await CarregarCombos(jobOrder.IdClient, jobOrder.Sdr_Bdr);
@@ -103,9 +99,7 @@ namespace HubWalks.Controllers
             }
 
             // preserva DataSolicitacao do banco
-            var original = await _context.OrdensDeServico
-                .AsNoTracking()
-                .FirstOrDefaultAsync(o => o.Id == id);
+            var original = await _jobOrderService.GetByIdAsync(id);
 
             if (original == null) return NotFound();
 
@@ -113,12 +107,11 @@ namespace HubWalks.Controllers
 
             try
             {
-                _context.Update(form);
-                await _context.SaveChangesAsync();
+                await _jobOrderService.UpdateAsync(form);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!JobOrderExists(form.Id)) return NotFound();
+                if (!await JobOrderExists(form.Id)) return NotFound();
                 throw;
             }
 
@@ -130,9 +123,7 @@ namespace HubWalks.Controllers
         {
             if (id == null) return NotFound();
 
-            var jobOrder = await _context.OrdensDeServico
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var jobOrder = await _jobOrderService.GetByIdAsync(id.Value);
 
             if (jobOrder == null) return NotFound();
 
@@ -144,22 +135,17 @@ namespace HubWalks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var jobOrder = await _context.OrdensDeServico.FindAsync(id);
-            if (jobOrder != null)
-            {
-                _context.OrdensDeServico.Remove(jobOrder);
-                await _context.SaveChangesAsync();
-            }
+            await _jobOrderService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool JobOrderExists(int id) =>
-            _context.OrdensDeServico.Any(e => e.Id == id);
+        private async Task<bool> JobOrderExists(int id) =>
+            await _jobOrderService.GetByIdAsync(id) != null;
 
         private async Task CarregarCombos(Guid? selectedCliente, string selectedSdrBdr)
         {
-            var clientes = await _context.Clientes.AsNoTracking().OrderBy(c => c.NomeCliente).ToListAsync();
-            var sdrBdrs = await _context.Sdr_Bdrs.AsNoTracking().OrderBy(s => s.Nome).ToListAsync();
+            var clientes = (await _clienteService.GetAllAsync()).OrderBy(c => c.NomeCliente).ToList();
+            var sdrBdrs = (await _sdrBdrService.GetAllAsync()).OrderBy(s => s.Nome).ToList();
 
             ViewBag.SemClientesOuBdr = !clientes.Any() || !sdrBdrs.Any();
             ViewBag.Clientes = new SelectList(clientes, "IdCliente", "NomeCliente", selectedCliente);

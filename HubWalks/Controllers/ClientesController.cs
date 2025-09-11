@@ -5,30 +5,25 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using HubWalks.Bussines.Interfaces;
 using HubWalks.Bussines.Models;
-using HubWalks.Data;
-using HubWalks.Data.Context;
 
 namespace HubWalks.Controllers
 {
     public class ClientesController : Controller
     {
-        private readonly HubWalksDbContext _context;
+        private readonly IService<Cliente> _clienteService;
 
-        public ClientesController(HubWalksDbContext context)
+        public ClientesController(IService<Cliente> clienteService)
         {
-            _context = context;
+            _clienteService = clienteService;
         }
 
         // GET: Clientes
         public async Task<IActionResult> Index()
         {
-            var clientes = await _context.Clientes
-                .OrderBy(c => c.NomeCliente)
-                .AsNoTracking()
-                .ToListAsync();
-
-            return View(clientes);
+            var clientes = await _clienteService.GetAllAsync();
+            return View(clientes.OrderBy(c => c.NomeCliente));
         }
 
         // GET: Clientes/Details/5
@@ -36,9 +31,7 @@ namespace HubWalks.Controllers
         {
             if (id == null) return NotFound();
 
-            var cliente = await _context.Clientes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.IdCliente == id);
+            var cliente = await _clienteService.GetByIdAsync(id.Value);
 
             if (cliente == null) return NotFound();
 
@@ -58,8 +51,7 @@ namespace HubWalks.Controllers
             cliente.IdCliente = Guid.NewGuid();
             cliente.DataCadastro = DateTime.UtcNow; // defina no servidor
 
-            _context.Add(cliente);
-            await _context.SaveChangesAsync();
+            await _clienteService.AddAsync(cliente);
             return RedirectToAction(nameof(Index));
         }
 
@@ -68,7 +60,7 @@ namespace HubWalks.Controllers
         {
             if (id == null) return NotFound();
 
-            var cliente = await _context.Clientes.FindAsync(id);
+            var cliente = await _clienteService.GetByIdAsync(id.Value);
             if (cliente == null) return NotFound();
 
             return View(cliente);
@@ -85,9 +77,7 @@ namespace HubWalks.Controllers
             if (!ModelState.IsValid) return View(form);
 
             // preserva DataCadastro do banco
-            var original = await _context.Clientes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.IdCliente == id);
+            var original = await _clienteService.GetByIdAsync(id);
 
             if (original == null) return NotFound();
 
@@ -95,12 +85,11 @@ namespace HubWalks.Controllers
 
             try
             {
-                _context.Update(form);
-                await _context.SaveChangesAsync();
+                await _clienteService.UpdateAsync(form);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ClienteExists(id)) return NotFound();
+                if (!await ClienteExists(id)) return NotFound();
                 throw;
             }
 
@@ -112,9 +101,7 @@ namespace HubWalks.Controllers
         {
             if (id == null) return NotFound();
 
-            var cliente = await _context.Clientes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.IdCliente == id);
+            var cliente = await _clienteService.GetByIdAsync(id.Value);
 
             if (cliente == null) return NotFound();
 
@@ -126,16 +113,11 @@ namespace HubWalks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
-            if (cliente != null)
-            {
-                _context.Clientes.Remove(cliente);
-                await _context.SaveChangesAsync();
-            }
+            await _clienteService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ClienteExists(Guid id) =>
-            _context.Clientes.Any(e => e.IdCliente == id);
+        private async Task<bool> ClienteExists(Guid id) =>
+            await _clienteService.GetByIdAsync(id) != null;
     }
 }

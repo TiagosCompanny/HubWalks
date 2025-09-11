@@ -1,5 +1,8 @@
 using HubWalks.Data;
 using HubWalks.Data.Context;
+using HubWalks.Data.Repository;
+using HubWalks.Bussines.Interfaces;
+using HubWalks.Bussines.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +30,8 @@ namespace HubWalks
 
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
             var app = builder.Build();
 

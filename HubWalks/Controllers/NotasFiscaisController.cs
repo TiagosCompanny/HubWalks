@@ -5,29 +5,27 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using HubWalks.Bussines.Interfaces;
 using HubWalks.Bussines.Models;
-using HubWalks.Data.Context;
 
 namespace HubWalks.Controllers
 {
     public class NotasFiscaisController : Controller
     {
-        private readonly HubWalksDbContext _context;
+        private readonly IService<NotaFiscal> _notaFiscalService;
+        private readonly IService<JobOrder> _jobOrderService;
 
-        public NotasFiscaisController(HubWalksDbContext context)
+        public NotasFiscaisController(IService<NotaFiscal> notaFiscalService, IService<JobOrder> jobOrderService)
         {
-            _context = context;
+            _notaFiscalService = notaFiscalService;
+            _jobOrderService = jobOrderService;
         }
 
         // GET: NotasFiscais
         public async Task<IActionResult> Index()
         {
-            var list = await _context.NotasFicais
-                .AsNoTracking()
-                .OrderByDescending(n => n.DataEmissao)
-                .ToListAsync();
-
-            return View(list);
+            var list = await _notaFiscalService.GetAllAsync();
+            return View(list.OrderByDescending(n => n.DataEmissao));
         }
 
         // GET: NotasFiscais/Details/5
@@ -35,9 +33,7 @@ namespace HubWalks.Controllers
         {
             if (id == null) return NotFound();
 
-            var notaFiscal = await _context.NotasFicais
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var notaFiscal = await _notaFiscalService.GetByIdAsync(id.Value);
 
             if (notaFiscal == null) return NotFound();
 
@@ -47,8 +43,7 @@ namespace HubWalks.Controllers
         // GET: NotasFiscais/Create
         public IActionResult Create()
         {
-            var orders = _context.OrdensDeServico
-                .AsNoTracking()
+            var orders = (await _jobOrderService.GetAllAsync())
                 .OrderBy(o => o.NomeProjeto)
                 .Select(o => new { o.Id, Texto = $"{o.Id} - {o.NomeProjeto}" })
                 .ToList();
@@ -73,8 +68,7 @@ namespace HubWalks.Controllers
                 return View(notaFiscal);
             }
 
-            _context.Add(notaFiscal);
-            await _context.SaveChangesAsync();
+            await _notaFiscalService.AddAsync(notaFiscal);
             return RedirectToAction(nameof(Index));
         }
 
@@ -83,7 +77,7 @@ namespace HubWalks.Controllers
         {
             if (id == null) return NotFound();
 
-            var notaFiscal = await _context.NotasFicais.FindAsync(id);
+            var notaFiscal = await _notaFiscalService.GetByIdAsync(id.Value);
             if (notaFiscal == null) return NotFound();
 
             await CarregarJobOrders(notaFiscal.IdJobOrder);
@@ -104,21 +98,18 @@ namespace HubWalks.Controllers
             }
 
             // preserva DataEmissao do banco
-            var original = await _context.NotasFicais
-                .AsNoTracking()
-                .FirstOrDefaultAsync(n => n.Id == id);
+            var original = await _notaFiscalService.GetByIdAsync(id);
             if (original == null) return NotFound();
 
             form.DataEmissao = original.DataEmissao;
 
             try
             {
-                _context.Update(form);
-                await _context.SaveChangesAsync();
+                await _notaFiscalService.UpdateAsync(form);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!NotaFiscalExists(form.Id)) return NotFound();
+                if (!await NotaFiscalExists(form.Id)) return NotFound();
                 throw;
             }
 
@@ -130,9 +121,7 @@ namespace HubWalks.Controllers
         {
             if (id == null) return NotFound();
 
-            var notaFiscal = await _context.NotasFicais
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var notaFiscal = await _notaFiscalService.GetByIdAsync(id.Value);
 
             if (notaFiscal == null) return NotFound();
 
@@ -144,25 +133,19 @@ namespace HubWalks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var notaFiscal = await _context.NotasFicais.FindAsync(id);
-            if (notaFiscal != null)
-            {
-                _context.NotasFicais.Remove(notaFiscal);
-                await _context.SaveChangesAsync();
-            }
+            await _notaFiscalService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NotaFiscalExists(int id) =>
-            _context.NotasFicais.Any(e => e.Id == id);
+        private async Task<bool> NotaFiscalExists(int id) =>
+            await _notaFiscalService.GetByIdAsync(id) != null;
 
         private async Task CarregarJobOrders(int? selectedId)
         {
-            var orders = await _context.OrdensDeServico
-                .AsNoTracking()
+            var orders = (await _jobOrderService.GetAllAsync())
                 .OrderBy(o => o.NomeProjeto)
                 .Select(o => new { o.Id, Texto = $"{o.Id} - {o.NomeProjeto}" })
-                .ToListAsync();
+                .ToList();
 
             ViewBag.SemJobOrders = !orders.Any();
             ViewBag.JobOrders = new SelectList(orders, "Id", "Texto", selectedId);

@@ -5,24 +5,25 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using HubWalks.Bussines.Interfaces;
 using HubWalks.Bussines.Models;
-using HubWalks.Data.Context;
 
 namespace HubWalks.Controllers
 {
     public class SdrBdrController : Controller
     {
-        private readonly HubWalksDbContext _context;
+        private readonly IService<Sdr_Bdr> _sdrBdrService;
 
-        public SdrBdrController(HubWalksDbContext context)
+        public SdrBdrController(IService<Sdr_Bdr> sdrBdrService)
         {
-            _context = context;
+            _sdrBdrService = sdrBdrService;
         }
 
         // GET: SdrBdr
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Sdr_Bdrs.ToListAsync());
+            var list = await _sdrBdrService.GetAllAsync();
+            return View(list);
         }
 
         // GET: SdrBdr/Details/5
@@ -33,8 +34,7 @@ namespace HubWalks.Controllers
                 return NotFound();
             }
 
-            var sdr_Bdr = await _context.Sdr_Bdrs
-                .FirstOrDefaultAsync(m => m.IdSdr_Bdr == id);
+            var sdr_Bdr = await _sdrBdrService.GetByIdAsync(id.Value);
             if (sdr_Bdr == null)
             {
                 return NotFound();
@@ -59,8 +59,7 @@ namespace HubWalks.Controllers
             if (ModelState.IsValid)
             {
                 sdr_Bdr.IdSdr_Bdr = Guid.NewGuid();
-                _context.Add(sdr_Bdr);
-                await _context.SaveChangesAsync();
+                await _sdrBdrService.AddAsync(sdr_Bdr);
                 return RedirectToAction(nameof(Index));
             }
             return View(sdr_Bdr);
@@ -74,7 +73,7 @@ namespace HubWalks.Controllers
                 return NotFound();
             }
 
-            var sdr_Bdr = await _context.Sdr_Bdrs.FindAsync(id);
+            var sdr_Bdr = await _sdrBdrService.GetByIdAsync(id.Value);
             if (sdr_Bdr == null)
             {
                 return NotFound();
@@ -98,12 +97,11 @@ namespace HubWalks.Controllers
             {
                 try
                 {
-                    _context.Update(sdr_Bdr);
-                    await _context.SaveChangesAsync();
+                    await _sdrBdrService.UpdateAsync(sdr_Bdr);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!Sdr_BdrExists(sdr_Bdr.IdSdr_Bdr))
+                    if (!await Sdr_BdrExists(sdr_Bdr.IdSdr_Bdr))
                     {
                         return NotFound();
                     }
@@ -125,8 +123,7 @@ namespace HubWalks.Controllers
                 return NotFound();
             }
 
-            var sdr_Bdr = await _context.Sdr_Bdrs
-                .FirstOrDefaultAsync(m => m.IdSdr_Bdr == id);
+            var sdr_Bdr = await _sdrBdrService.GetByIdAsync(id.Value);
             if (sdr_Bdr == null)
             {
                 return NotFound();
@@ -140,19 +137,11 @@ namespace HubWalks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var sdr_Bdr = await _context.Sdr_Bdrs.FindAsync(id);
-            if (sdr_Bdr != null)
-            {
-                _context.Sdr_Bdrs.Remove(sdr_Bdr);
-            }
-
-            await _context.SaveChangesAsync();
+            await _sdrBdrService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool Sdr_BdrExists(Guid id)
-        {
-            return _context.Sdr_Bdrs.Any(e => e.IdSdr_Bdr == id);
-        }
+        private async Task<bool> Sdr_BdrExists(Guid id) =>
+            await _sdrBdrService.GetByIdAsync(id) != null;
     }
 }
