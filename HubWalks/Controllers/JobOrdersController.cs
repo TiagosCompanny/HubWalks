@@ -12,11 +12,11 @@ namespace HubWalks.Controllers
 {
     public class JobOrdersController : Controller
     {
-        private readonly IService<JobOrder> _jobOrderService;
-        private readonly IService<Cliente> _clienteService;
-        private readonly IService<Sdr_Bdr> _sdrBdrService;
+        private readonly IJobOrderService _jobOrderService;
+        private readonly IClienteService _clienteService;
+        private readonly ISdr_BdrService _sdrBdrService;
 
-        public JobOrdersController(IService<JobOrder> jobOrderService, IService<Cliente> clienteService, IService<Sdr_Bdr> sdrBdrService)
+        public JobOrdersController(IJobOrderService jobOrderService, IClienteService clienteService, ISdr_BdrService sdrBdrService)
         {
             _jobOrderService = jobOrderService;
             _clienteService = clienteService;
