@@ -16,7 +16,7 @@ namespace HubWalks
 
 
             builder.Services.AddDbContext<HubWalksDbContext>(options =>
-            options.UseNpgsql(connectionString, b => b.MigrationsAssembly("HubWalks.Data")));
+            options.UseSqlServer(connectionString, b => b.MigrationsAssembly("HubWalks.Data")));
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -52,15 +52,6 @@ namespace HubWalks
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
-
-
-            // Aplica migrations automaticamente em produção
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<HubWalksDbContext>();
-                db.Database.Migrate();
-            }
-
 
             app.Run();
 

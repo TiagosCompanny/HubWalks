@@ -29,9 +29,6 @@ namespace HubWalks.Data.Context
         {
             base.OnModelCreating(builder);
 
-            // <<< ESSENCIAL >>>
-            builder.HasDefaultSchema("app");
-
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = "role-admin", Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = Guid.NewGuid().ToString() },
                 new IdentityRole { Id = "role-user", Name = "User", NormalizedName = "USER", ConcurrencyStamp = Guid.NewGuid().ToString() }
