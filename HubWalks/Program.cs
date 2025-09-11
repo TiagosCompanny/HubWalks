@@ -1,5 +1,8 @@
 using HubWalks.Data;
 using HubWalks.Data.Context;
+using HubWalks.Data.Repository;
+using HubWalks.Bussines.Interfaces;
+using HubWalks.Bussines.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +30,16 @@ namespace HubWalks
 
 
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+            builder.Services.AddScoped<IJobOrderRepository, JobOrderRepository>();
+            builder.Services.AddScoped<INotaFiscalRepository, NotaFiscalRepository>();
+            builder.Services.AddScoped<ISdr_BdrRepository, Sdr_BdrRepository>();
+
+            builder.Services.AddScoped<IClienteService, ClienteService>();
+            builder.Services.AddScoped<IJobOrderService, JobOrderService>();
+            builder.Services.AddScoped<INotaFiscalService, NotaFiscalService>();
+            builder.Services.AddScoped<ISdr_BdrService, Sdr_BdrService>();
 
             var app = builder.Build();
 
