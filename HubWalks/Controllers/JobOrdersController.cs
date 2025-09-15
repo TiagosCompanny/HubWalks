@@ -43,7 +43,7 @@ namespace HubWalks.Controllers
         }
 
         // GET: JobOrders/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
             var clientes = (await _clienteService.GetAllAsync()).OrderBy(c => c.NomeCliente).ToList();
             var sdrBdrs = (await _sdrBdrService.GetAllAsync()).OrderBy(s => s.Nome).ToList();

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HubWalks.Bussines.Interfaces;
-using HubWalks.Data.Repository;
+
 
 namespace HubWalks.Bussines.Services
 {
