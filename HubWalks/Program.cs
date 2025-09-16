@@ -18,7 +18,7 @@ namespace HubWalks
             builder.Services.AddDbContext<HubWalksDbContext>(options =>
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly("HubWalks.Data")));
 
-            // Em DEV, mostra páginas detalhadas de erro de banco
+            // (Opcional) Em DEV, páginas detalhadas para erros de banco:
             if (builder.Environment.IsDevelopment())
             {
                 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -28,7 +28,6 @@ namespace HubWalks
                 .AddDefaultIdentity<IdentityUser>(options =>
                 {
                     options.SignIn.RequireConfirmedAccount = true;
-                    // Ajustes de senha/lockout se quiser...
                 })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<HubWalksDbContext>();
@@ -38,32 +37,32 @@ namespace HubWalks
             var app = builder.Build();
 
             // ===== Pipeline =====
-            if (app.Environment.IsDevelopment())
-            {
-                // Páginas de erro amigáveis para migrations/dev
-                app.UseMigrationsEndPoint();
-                // Opcional: app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // Nunca exponha detalhes em produção
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
 
-                // (Opcional, mas recomendado se estiver atrás de proxy/load balancer)
-                // Isso ajuda a respeitar X-Forwarded-Proto/For e manter HTTPS correto.
-                app.UseForwardedHeaders(new ForwardedHeadersOptions
-                {
-                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-                });
-            }
+            // FORÇA DETALHES DE EXCEÇÃO MESMO EM PRODUÇÃO (TEMPORÁRIO)
+            app.UseDeveloperExceptionPage();
+
+            // Se estiver atrás de proxy/load balancer (IIS/NGINX/Azure), preserve IP/PROTO
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
+            // Em modo "debug temporário" não usamos UseExceptionHandler/HSTS,
+            // para não esconder a página detalhada de erro.
+            // -> Quando terminar o diagnóstico, REMOVA a linha acima
+            //    e reative o bloco seguro abaixo:
+            //
+            // if (!app.Environment.IsDevelopment())
+            // {
+            //     app.UseExceptionHandler("/Home/Error");
+            //     app.UseHsts();
+            // }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            // >>> Você tinha Identity mas faltava habilitar:
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -72,9 +71,9 @@ namespace HubWalks
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-            // Importante: você disse que já aplicou as migrations no servidor,
-            // então NÃO vamos chamar db.Database.Migrate() aqui.
-            // (Se um dia quiser automatizar, coloque dentro de if (app.Environment.IsDevelopment()).
+            // Não aplicar migrations automaticamente em produção
+            // (você disse que já aplicou manualmente).
+            // Se um dia precisar, faça dentro de if (app.Environment.IsDevelopment()).
 
             app.Run();
         }
