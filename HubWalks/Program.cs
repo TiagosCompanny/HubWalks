@@ -1,7 +1,7 @@
-using HubWalks.Data;
 using HubWalks.Data.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace HubWalks
 {
@@ -11,34 +11,51 @@ namespace HubWalks
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
+            // ===== Services =====
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
             builder.Services.AddDbContext<HubWalksDbContext>(options =>
-            options.UseSqlServer(connectionString, b => b.MigrationsAssembly("HubWalks.Data")));
+                options.UseSqlServer(connectionString, b => b.MigrationsAssembly("HubWalks.Data")));
 
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            // Em DEV, mostra páginas detalhadas de erro de banco
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            }
 
             builder.Services
-            .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddRoles<IdentityRole>() // <-- adicione isto se usar roles
-            .AddEntityFrameworkStores<HubWalksDbContext>();
-
+                .AddDefaultIdentity<IdentityUser>(options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = true;
+                    // Ajustes de senha/lockout se quiser...
+                })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<HubWalksDbContext>();
 
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // ===== Pipeline =====
             if (app.Environment.IsDevelopment())
             {
+                // Páginas de erro amigáveis para migrations/dev
                 app.UseMigrationsEndPoint();
+                // Opcional: app.UseDeveloperExceptionPage();
             }
             else
             {
+                // Nunca exponha detalhes em produção
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
+
+                // (Opcional, mas recomendado se estiver atrás de proxy/load balancer)
+                // Isso ajuda a respeitar X-Forwarded-Proto/For e manter HTTPS correto.
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                });
             }
 
             app.UseHttpsRedirection();
@@ -46,6 +63,8 @@ namespace HubWalks
 
             app.UseRouting();
 
+            // >>> Você tinha Identity mas faltava habilitar:
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
@@ -53,19 +72,11 @@ namespace HubWalks
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-
-            // Aplica migrations automaticamente em produção
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<HubWalksDbContext>();
-                db.Database.Migrate();
-            }
-
+            // Importante: você disse que já aplicou as migrations no servidor,
+            // então NÃO vamos chamar db.Database.Migrate() aqui.
+            // (Se um dia quiser automatizar, coloque dentro de if (app.Environment.IsDevelopment()).
 
             app.Run();
-
-            //todo criar usuario administrador padrao
-
         }
     }
 }
