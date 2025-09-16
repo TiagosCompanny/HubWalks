@@ -19,7 +19,7 @@
                             <th>@Html.DisplayNameFor(m => m.First().NomeProjeto)</th>
                             <th>Cliente</th>
                             <th>@Html.DisplayNameFor(m => m.First().Closer)</th>
-                            <th>@Html.DisplayNameFor(m => m.First().Sdr_Bdr)</th>
+                            <th>Sdr_Bdr</th>
                             <th>@Html.DisplayNameFor(m => m.First().DataSolicitacao)</th>
                             <th>@Html.DisplayNameFor(m => m.First().Prazo)</th>
                             <th>@Html.DisplayNameFor(m => m.First().Valor)</th>
@@ -31,12 +31,9 @@
                         {
                             <tr>
                                 <td>@item.NomeProjeto</td>
-                                <td>
-                                    @* Aqui idealmente deveria mostrar o nome do cliente em vez do Guid *@
-                                    @item.IdClient
-                                </td>
+                                <td>@item.Cliente?.NomeCliente</td>
                                 <td>@item.Closer</td>
-                                <td>@item.Sdr_Bdr</td>
+                                <td>@item.SdrBdr?.Nome</td>
                                 <td>@item.DataSolicitacao.ToString("dd/MM/yyyy")</td>
                                 <td>@item.Prazo.ToString("dd/MM/yyyy")</td>
                                 <td>@item.Valor.ToString("C")</td>

@@ -52,6 +52,9 @@ namespace HubWalks.Bussines.Models
         [DataType(DataType.DateTime)]
         public DateTime DataCadastro { get; set; }
 
+
+        public ICollection<JobOrder> JobOrders { get; set; } = new List<JobOrder>();
+
         public Cliente()
         {
             IdCliente = Guid.NewGuid();

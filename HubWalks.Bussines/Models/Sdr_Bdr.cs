@@ -20,6 +20,8 @@ namespace HubWalks.Bussines.Models
         [DataType(DataType.Date)]
         public DateTime DataCadastro { get; set; }
 
+        public ICollection<JobOrder> JobOrders { get; set; } = new List<JobOrder>();
+
         public Sdr_Bdr()
         {
             IdSdr_Bdr = Guid.NewGuid();

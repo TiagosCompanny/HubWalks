@@ -27,13 +27,13 @@
                 <dd class="col-sm-9">@Model.DataSolicitacao.ToString("dd/MM/yyyy HH:mm")</dd>
 
                 <dt class="col-sm-3">Cliente</dt>
-                <dd class="col-sm-9">@Model.IdClient</dd> @* Aqui ideal seria exibir o NomeCliente *@
+                <dd class="col-sm-9">@Model.Cliente?.NomeCliente</dd>
 
                 <dt class="col-sm-3">Closer</dt>
                 <dd class="col-sm-9">@Model.Closer</dd>
 
                 <dt class="col-sm-3">SDR/BDR</dt>
-                <dd class="col-sm-9">@Model.Sdr_Bdr</dd>
+                <dd class="col-sm-9">@Model.SdrBdr?.Nome</dd>
 
                 <dt class="col-sm-3">% Comissão Comercial</dt>
                 <dd class="col-sm-9">@Model.PercentualComissaoComercial %</dd>

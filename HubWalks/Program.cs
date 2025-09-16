@@ -16,7 +16,7 @@ namespace HubWalks
 
 
             builder.Services.AddDbContext<HubWalksDbContext>(options =>
-            options.UseNpgsql(connectionString, b => b.MigrationsAssembly("HubWalks.Data")));
+            options.UseSqlServer(connectionString, b => b.MigrationsAssembly("HubWalks.Data")));
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

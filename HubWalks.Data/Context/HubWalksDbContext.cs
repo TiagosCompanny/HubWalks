@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,13 +30,23 @@ namespace HubWalks.Data.Context
         {
             base.OnModelCreating(builder);
 
-            // <<< ESSENCIAL >>>
-            builder.HasDefaultSchema("app");
-
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = "role-admin", Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = Guid.NewGuid().ToString() },
                 new IdentityRole { Id = "role-user", Name = "User", NormalizedName = "USER", ConcurrencyStamp = Guid.NewGuid().ToString() }
             );
+
+            builder.Entity<JobOrder>(entity =>
+            {
+                entity.HasOne(j => j.Cliente)
+                      .WithMany(c => c.JobOrders)
+                      .HasForeignKey(j => j.IdClient)
+                      .HasPrincipalKey(c => c.IdCliente);
+
+                entity.HasOne(j => j.SdrBdr)
+                      .WithMany(s => s.JobOrders)
+                      .HasForeignKey(j => j.SdrBdrId)
+                      .HasPrincipalKey(s => s.IdSdr_Bdr);
+            });
         }
     }
 }

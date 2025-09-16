@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace HubWalks.Bussines.Models
 {
@@ -33,14 +34,24 @@ namespace HubWalks.Bussines.Models
         [Display(Name = "Cliente")]
         public Guid IdClient { get; set; }
 
+        [ValidateNever]
+        [ForeignKey(nameof(IdClient))]
+        public Cliente Cliente { get; set; }
+
         [Required]
         [StringLength(100)]
         [Display(Name = "Closer")]
         public string Closer { get; set; }
 
-        [StringLength(100)]
+
+        [Required]
         [Display(Name = "SDR/BDR")]
-        public string Sdr_Bdr { get; set; }
+        public Guid SdrBdrId { get; set; }
+
+
+        [ValidateNever]
+        [ForeignKey(nameof(SdrBdrId))]
+        public Sdr_Bdr SdrBdr { get; set; }
 
         [Range(0, 100)]
         [Display(Name = "% Comissão Comercial")]

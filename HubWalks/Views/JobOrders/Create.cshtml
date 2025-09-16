@@ -38,7 +38,9 @@
 
                     <div class="col-md-6">
                         <label asp-for="IdClient" class="form-label">Cliente</label>
-                        <select asp-for="IdClient" class="form-select" asp-items="ViewBag.Clientes"></select>
+                        <select asp-for="IdClient" class="form-select" asp-items="ViewBag.Clientes">
+                            <option value="">-- selecione --</option>
+                        </select>
                         <span asp-validation-for="IdClient" class="text-danger"></span>
                     </div>
 
@@ -49,9 +51,11 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="Sdr_Bdr" class="form-label">SDR/BDR</label>
-                        <select asp-for="Sdr_Bdr" class="form-select" asp-items="ViewBag.SdrBdrs"></select>
-                        <span asp-validation-for="Sdr_Bdr" class="text-danger"></span>
+                        <label asp-for="SdrBdrId" class="form-label">SDR/BDR</label>
+                        <select asp-for="SdrBdrId" class="form-select" asp-items="ViewBag.SdrBdrs">
+                            <option value="">-- selecione --</option>
+                        </select>
+                        <span asp-validation-for="SdrBdrId" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
@@ -102,7 +106,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }
