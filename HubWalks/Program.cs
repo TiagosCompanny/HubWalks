@@ -12,8 +12,7 @@ namespace HubWalks
             var builder = WebApplication.CreateBuilder(args);
 
             // ===== Services =====
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            var connectionString = "Server=192.168.1.158,1433;Database=HubWalks;User Id=TiagoCarvalho;Password=Crespo@123;TrustServerCertificate=True;MultipleActiveResultSets=True";
 
             builder.Services.AddDbContext<HubWalksDbContext>(options =>
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly("HubWalks.Data")));
